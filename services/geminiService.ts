@@ -1,11 +1,14 @@
+/// <reference types="vite/client" />
 import { GoogleGenAI, Type } from "@google/genai";
 import { GemniResponseSchema } from "../types";
 
 const createClient = () => {
-  const apiKey = process.env.API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!apiKey) {
-    console.error("API_KEY is missing from environment variables");
-    return null;
+    const error = new Error(
+      "VITE_GEMINI_API_KEY is missing from environment variables. Please add it to .env.local"
+    );
+    throw error;
   }
   return new GoogleGenAI({ apiKey });
 };
@@ -14,14 +17,13 @@ export const generateSteps = async (
   prompt: string,
   context?: string
 ): Promise<GemniResponseSchema | null> => {
-  const client = createClient();
-  if (!client) return null;
-
-  const fullPrompt = context 
-    ? `The user wants to know how to "${context}". Specifically, expand on the step: "${prompt}". Provide 5 to 8 detailed sub-steps.`
-    : `The user wants to know: "${prompt}". Provide a list of 5 to 10 distinct, actionable steps to achieve this.`;
-
   try {
+    const client = createClient();
+
+    const fullPrompt = context 
+      ? `The user wants to know how to "${context}". Specifically, expand on the step: "${prompt}". Provide 5 to 8 detailed sub-steps.`
+      : `The user wants to know: "${prompt}". Provide a list of 5 to 10 distinct, actionable steps to achieve this.`;
+
     const response = await client.models.generateContent({
       model: "gemini-2.5-flash",
       contents: fullPrompt,
@@ -59,8 +61,42 @@ export const generateSteps = async (
     }
     return null;
 
-  } catch (error) {
-    console.error("Error generating steps:", error);
-    return null;
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // Check for specific error types
+    if (errorMessage.includes("quota") || errorMessage.includes("429")) {
+      throw new Error(
+        "API quota exceeded: You've hit the Gemini API rate limit. Please wait and try again later."
+      );
+    } else if (
+      errorMessage.includes("API_KEY") ||
+      errorMessage.includes("VITE_GEMINI_API_KEY") ||
+      errorMessage.includes("apiKey") ||
+      errorMessage.includes("invalid API key")
+    ) {
+      throw new Error(
+        "API key error: VITE_GEMINI_API_KEY is missing or invalid. Check your .env.local file."
+      );
+    } else if (errorMessage.includes("network") || errorMessage.includes("fetch")) {
+      throw new Error(
+        "Network error: Could not connect to the API. Check your internet connection."
+      );
+    } else if (errorMessage.includes("401") || errorMessage.includes("403")) {
+      throw new Error(
+        "Authentication error: Your API key is invalid. Check your .env.local file."
+      );
+    } else if (errorMessage.includes("400")) {
+      throw new Error(
+        "Bad request: The API rejected the request. Please try with different input."
+      );
+    } else if (errorMessage.includes("500")) {
+      throw new Error(
+        "Server error: The API is currently experiencing issues. Please try again later."
+      );
+    }
+    
+    // Re-throw with original message if caught
+    throw error;
   }
 };
