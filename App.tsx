@@ -254,7 +254,7 @@ const App: React.FC = () => {
   const isRightDisabled = window.innerWidth < 768 ? mobileColIndex === columns.length - 1 : false;
 
   return (
-    <div className="h-screen w-screen bg-[#f0f4f8] text-slate-800 font-sans overflow-hidden flex flex-col">
+    <div className="h-screen w-screen bg-[#f0f4f8] text-slate-800 font-sans overflow-y-auto flex flex-col">
 
       {/* Navbar / Header */}
       <header className="h-16 bg-white/80 backdrop-blur-md border-b border-white shadow-sm flex items-center justify-between px-4 md:px-8 z-30 relative transition-all duration-300">
@@ -281,11 +281,11 @@ const App: React.FC = () => {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 relative overflow-hidden flex flex-col">
+      <main className="flex-1 relative overflow-visible flex flex-col">
 
         {/* Navigation Controls (Top, below navbar) - Always visible in Active Mode */}
         {!isHero && (
-          <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none p-4 flex justify-between items-start animate-enter-slide">
+          <div className="md:absolute md:top-16 md:left-0 md:right-0 z-20 pointer-events-none px-3 py-2 md:p-4 flex justify-between items-start animate-enter-slide">
             <button
               onClick={() => handleNav('left')}
               className={`
@@ -357,9 +357,9 @@ const App: React.FC = () => {
         </div>
 
         {/* Mobile: Swipe/Snap View */}
-        <div className="md:hidden h-full relative pt-14">
-          <div className="h-full w-full p-4 pb-20">
-            <div key={mobileColIndex} className="h-full w-full">
+        <div className="md:hidden h-screen relative pt-4">
+          <div className="min-h-[calc(100vh-4rem)] w-full px-4 pt-2 pb-4">
+            <div key={mobileColIndex} className="min-h-[calc(100vh-4rem)] w-full">
               <Column
                 data={columns[mobileColIndex]}
                 isMobile={true}

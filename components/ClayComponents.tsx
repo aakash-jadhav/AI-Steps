@@ -1,4 +1,5 @@
 import React from 'react';
+import { JSX } from 'react';
 
 // --- Clay Card ---
 interface ClayCardProps {
@@ -12,14 +13,14 @@ interface ClayCardProps {
 
 export const ClayCard: React.FC<ClayCardProps> = ({ children, className = '', onClick, isActive, isFocused, style }) => {
   // Combine active (clicked) and focused (keyboard) states
-  const activeStyles = isActive 
-    ? 'border-sim-blue border-l-4 bg-blue-50/50 scale-[1.02] z-10' 
-    : isFocused 
+  const activeStyles = isActive
+    ? 'border-sim-blue border-l-4 bg-blue-50/50 scale-[1.02] z-10'
+    : isFocused
       ? 'border-sim-blue border-l-4 bg-white scale-105 shadow-2xl z-20 ring-2 ring-sim-blue/20' // Mimic hover + focus ring
       : 'border-transparent border-l-4 hover:scale-105 hover:shadow-2xl hover:z-20 transition-all duration-300 ease-out';
 
   return (
-    <div 
+    <div
       onClick={onClick}
       style={style}
       className={`
@@ -27,7 +28,7 @@ export const ClayCard: React.FC<ClayCardProps> = ({ children, className = '', on
         bg-white 
         rounded-xl 
         shadow-clay-card 
-        p-5 
+        p-4
         border-b-2 border-slate-100
         cursor-pointer
         select-none
@@ -50,7 +51,7 @@ export const ClayButton: React.FC<ClayButtonProps> = ({ children, className = ''
   let colors = '';
   let shadow = 'shadow-clay-btn active:shadow-clay-btn-active active:translate-y-[4px]';
   let hover = '';
-  
+
   if (variant === 'primary') {
     colors = 'bg-gradient-to-br from-sim-blue to-cyan-600 text-white border-none';
     shadow = 'shadow-[0_4px_0_#0891b2,0_8px_10px_rgba(0,0,0,0.15)] active:shadow-[0_0_0_#0891b2,inset_0_2px_4px_rgba(0,0,0,0.1)]';
@@ -91,7 +92,7 @@ export const ClayButton: React.FC<ClayButtonProps> = ({ children, className = ''
 };
 
 // --- Clay Input ---
-interface ClayInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+interface ClayInputProps extends React.InputHTMLAttributes<HTMLInputElement> { }
 
 export const ClayInput: React.FC<ClayInputProps> = ({ className = '', ...props }) => {
   return (
@@ -116,7 +117,7 @@ export const ClayInput: React.FC<ClayInputProps> = ({ className = '', ...props }
 };
 
 // --- Clay TextArea ---
-interface ClayTextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+interface ClayTextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> { }
 
 export const ClayTextArea: React.FC<ClayTextAreaProps> = ({ className = '', ...props }) => {
   return (
