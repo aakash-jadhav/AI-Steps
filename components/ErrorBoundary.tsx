@@ -18,8 +18,9 @@ const getErrorType = (message: string): ErrorState['errorType'] => {
         return 'api-quota';
     } else if (
         message.includes('API_KEY') ||
-        message.includes('VITE_GEMINI_API_KEY') ||
-        message.includes('apiKey')
+        message.includes('GEMINI_API_KEY') ||
+        message.includes('apiKey') ||
+        message.includes('API key')
     ) {
         return 'api-key';
     } else if (
@@ -49,7 +50,7 @@ const ErrorDisplay = ({ error, errorType, errorMessage, onReset, onReload }: {
         },
         'api-key': {
             title: 'API Key Missing or Invalid',
-            description: 'Please ensure your VITE_GEMINI_API_KEY is set in the .env.local file with a valid Gemini API key.',
+            description: 'Please ensure GEMINI_API_KEY is set in the backend .env file with a valid Gemini API key.',
         },
         'api-error': {
             title: 'API Error',
